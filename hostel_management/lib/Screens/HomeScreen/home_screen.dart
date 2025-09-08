@@ -434,8 +434,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) =>
-                        ViewScreen(backgroundImage: 'assets/home_card.png'),
+                    (context) => ViewScreen(
+                      backgroundImage: 'assets/home_card.png',
+                      hostelName: 'Hostel First Mirissa',
+                      description: 'Lorem ipsum alviflagrideridat.',
+                      location: 'Mirissa',
+                      price1: '\$10',
+                      price2: '\$30',
+                      availability: '48 (532) Available',
+                    ),
               ),
             );
           },
@@ -454,7 +461,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => ViewScreen(backgroundImage: 'assets/ab.png'),
+                    (context) => ViewScreen(
+                      backgroundImage: 'assets/ab.png',
+                      hostelName: 'Hostel First Mirissa',
+                      description: 'Lorem ipsum alviflagrideridat.',
+                      location: 'Mirissa',
+                      price1: '\$10',
+                      price2: '\$30',
+                      availability: '48 (532) Available',
+                    ),
               ),
             );
           },
@@ -473,7 +488,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => ViewScreen(backgroundImage: 'assets/c.jpeg'),
+                    (context) => ViewScreen(
+                      backgroundImage: 'assets/c.jpeg',
+                      hostelName: 'Hostel First Mirissa',
+                      description: 'Lorem ipsum alviflagrideridat.',
+                      location: 'Mirissa',
+                      price1: '\$10',
+                      price2: '\$30',
+                      availability: '48 (532) Available',
+                    ),
               ),
             );
           },
@@ -492,7 +515,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => ViewScreen(backgroundImage: 'assets/d.jpeg'),
+                    (context) => ViewScreen(
+                      backgroundImage: 'assets/d.jpeg',
+                      hostelName: 'Hostel First Mirissa',
+                      description: 'Lorem ipsum alviflagrideridat.',
+                      location: 'Mirissa',
+                      price1: '\$10',
+                      price2: '\$30',
+                      availability: '48 (532) Available',
+                    ),
               ),
             );
           },
