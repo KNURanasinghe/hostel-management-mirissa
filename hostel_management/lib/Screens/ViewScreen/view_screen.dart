@@ -150,36 +150,77 @@ class _ViewScreenState extends State<ViewScreen> {
                                 color: Colors.black.withOpacity(0.9),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      size: 10,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 4),
-                                    InterTextWidget(
-                                      text: widget.location,
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      fontWeight: FontWeightConst.medium,
-                                    ),
-                                  ],
-                                ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/view_location.png',
+                                    width: 18,
+                                    height: 19,
+                                  ),
+                                  SizedBox(width: 4),
+                                  InterTextWidget(
+                                    text: widget.location,
+                                    fontSize: 12,
+                                    color: Color(0xFFFFFBFB),
+                                    fontWeight: FontWeightConst.medium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              height: 21,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/yellow_start.png',
+                                    width: 18,
+                                    height: 19,
+                                  ),
+                                  SizedBox(width: 4),
+                                  InterTextWidget(
+                                    text: '4.8 (532)',
+                                    fontSize: 12,
+                                    color: Color(0xFFFFFBFB),
+                                    fontWeight: FontWeightConst.medium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              height: 21,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/yellow_cutlery.png',
+                                    width: 18,
+                                    height: 19,
+                                  ),
+                                  SizedBox(width: 4),
+                                  InterTextWidget(
+                                    text: 'Available',
+                                    fontSize: 12,
+                                    color: Color(0xFFFFFBFB),
+                                    fontWeight: FontWeightConst.medium,
+                                  ),
+                                ],
                               ),
                             ),
                           ],
-                        ),
-                        const Spacer(),
-                        Text(
-                          widget.availability,
-                          style: const TextStyle(
-                            color: Colors.green,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ],
                     ),
@@ -190,53 +231,84 @@ class _ViewScreenState extends State<ViewScreen> {
                     Row(
                       children: [
                         // Discounted Price
-                        Text(
-                          widget.price1,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        // Original Price
-                        Text(
-                          widget.price2,
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
-                            fontSize: 18,
-                            decoration: TextDecoration.lineThrough,
-                          ),
+                        Column(
+                          children: [
+                            //Room tag Row
+                            Row(
+                              children: [
+                                InterTextWidget(
+                                  text: 'Dorm',
+                                  fontSize: 12,
+                                  color: Color(0xFFD1D1D1),
+                                  fontWeight: FontWeightConst.semiBold,
+                                ),
+                                const SizedBox(width: 15),
+                                InterTextWidget(
+                                  text: 'Private',
+                                  fontSize: 12,
+                                  color: Color(0xFFD1D1D1),
+                                  fontWeight: FontWeightConst.semiBold,
+                                ),
+                              ],
+                            ),
+
+                            //Room tag price
+                            Row(
+                              children: [
+                                Text(
+                                  widget.price1,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                // Original Price
+                                Text(
+                                  widget.price1,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         const Spacer(),
+
                         // Choose Room Button
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle room selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: 40,
+                          decoration: ShapeDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment(0.00, 0.50),
+                              end: Alignment(1.00, 0.50),
+                              colors: [
+                                const Color(0xFF00B1D6),
+                                const Color(0xFF00358D),
+                              ],
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
-                            'Choose Room',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                          child: Center(
+                            child: InterTextWidget(
+                              text: 'Choose Room',
+                              fontSize: 18,
+                              color: Color(0xFFFEFEFE),
+                              fontWeight: FontWeightConst.semiBold,
                             ),
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
