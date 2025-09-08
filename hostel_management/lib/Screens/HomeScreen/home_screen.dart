@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hostel_management/Const/color_const.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Calender/calender_pop_up.dart';
@@ -249,12 +250,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildFilterTags() {
     final size = MediaQuery.of(context).size;
     final tags = [
+      'All',
       'Whale Watching',
       'Diving',
       'Surf Lesson',
       'Yoga Class',
       'Ayurvedic Massage',
-      'All',
+
       'Safari Tours',
       'Snorkeling',
       'Fishing Tours',
@@ -281,17 +283,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? Color(0xFF1A4D99) : Colors.white,
+                  color:
+                      isSelected
+                          ? ColorConst.buttonbackgroundBlue
+                          : Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Color(0xFF1A4D99), width: 1),
-                ),
-                child: Text(
-                  tag,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : Color(0xFF1A4D99),
+                  border: Border.all(
+                    color: ColorConst.buttonbackgroundBlue,
+                    width: 1,
                   ),
+                ),
+                child: InterTextWidget(
+                  text: tag,
+                  fontSize: 13,
+                  color: isSelected ? Colors.white : Color(0xFF1A4D99),
+                  fontWeight: FontWeightConst.semiBold,
+
+                  letterSpacing: 0,
                 ),
               ),
             ),
@@ -348,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           ActivityCard(
             rating: '5.0',
-            imageUrl: 'assets/activity_card.png',
+            imageUrl: 'assets/ab.png',
             price: '\$25',
             duration: '4-5 hrs',
             capacity: '8',
@@ -365,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           ActivityCard(
             rating: '4.6',
-            imageUrl: 'assets/activity_card.png',
+            imageUrl: 'assets/c.jpeg',
             price: '\$15',
             duration: '2-3 hrs',
             capacity: '15',
@@ -382,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           ActivityCard(
             rating: '4.5',
-            imageUrl: 'assets/activity_card.png',
+            imageUrl: 'assets/d.jpeg',
             price: '\$30',
             duration: '3-4 hrs',
             capacity: '12',
