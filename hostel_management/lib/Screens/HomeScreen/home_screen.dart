@@ -356,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           ActivityCard(
             rating: '5.0',
-            imageUrl: 'assets/ab.png',
+            imageUrl: 'assets/act_surf.png',
             price: '\$25',
             duration: '4-5 hrs',
             capacity: '8',
@@ -373,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           ActivityCard(
             rating: '4.6',
-            imageUrl: 'assets/c.jpeg',
+            imageUrl: 'assets/act_whale.png',
             price: '\$15',
             duration: '2-3 hrs',
             capacity: '15',
@@ -390,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           ActivityCard(
             rating: '4.5',
-            imageUrl: 'assets/d.jpeg',
+            imageUrl: 'assets/act_div.png',
             price: '\$30',
             duration: '3-4 hrs',
             capacity: '12',
@@ -435,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         HostelCard(
           rating: '4.5',
-          imageUrl: 'assets/home_card.png',
+          imageUrl: 'assets/ab.png',
           price1: '\$15',
           price2: '\$45',
           beds: '8',
@@ -450,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         HostelCard(
           rating: '4.6',
-          imageUrl: 'assets/home_card.png',
+          imageUrl: 'assets/c.jpeg',
           price1: '\$12',
           price2: '\$35',
           beds: '15',
@@ -465,7 +465,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         HostelCard(
           rating: '4.9',
-          imageUrl: 'assets/home_card.png',
+          imageUrl: 'assets/d.jpeg',
           price1: '\$18',
           price2: '\$55',
           beds: '12',
