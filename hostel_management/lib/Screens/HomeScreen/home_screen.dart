@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/color_const.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/Screens/ViewScreen/view_screen.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_image.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Calender/calender_pop_up.dart';
@@ -418,7 +419,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       mainAxisSpacing: 20,
       childAspectRatio: 0.5,
       children: [
-        // In your screen or parent widget
         HostelCard(
           rating: '4.8',
           imageUrl: 'assets/home_card.png',
@@ -429,9 +429,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           location: 'Hangover Hostels',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            // Handle card tap
-            print('Hostel Five Minus card tapped!');
-            // Navigate to hostel details page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) =>
+                        ViewScreen(backgroundImage: 'assets/home_card.png'),
+              ),
+            );
           },
         ),
         HostelCard(
@@ -444,9 +449,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           location: 'Hangover Hostels',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            // Handle card tap
-            print('Hostel Five Minus card tapped!');
-            // Navigate to hostel details page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => ViewScreen(backgroundImage: 'assets/ab.png'),
+              ),
+            );
           },
         ),
         HostelCard(
@@ -459,9 +468,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           location: 'SATORI BEACH HOUSE',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            // Handle card tap
-            print('JJ Hostel Mirissa card tapped!');
-            // Navigate to hostel details page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => ViewScreen(backgroundImage: 'assets/c.jpeg'),
+              ),
+            );
           },
         ),
         HostelCard(
@@ -474,9 +487,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           location: 'SATORI BEACH HOUSE',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            // Handle card tap
-            print('JJ Hostel Mirissa card tapped!');
-            // Navigate to hostel details page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => ViewScreen(backgroundImage: 'assets/d.jpeg'),
+              ),
+            );
           },
         ),
       ],

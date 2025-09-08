@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hostel_management/Screens/AuthScreen/auth_screen.dart';
 import 'package:hostel_management/Screens/AuthScreen/otp_verification_screen.dart';
 import 'package:hostel_management/Screens/OnBoardScreens/on_board_screen.dart';
+import 'package:hostel_management/Screens/SearchResults/hostel_search_results.dart';
 import 'package:hostel_management/Screens/splash_screen.dart';
 
 void main() {
@@ -16,11 +17,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Book Now',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SplashScreen(),
+      home: HostelSearchResults(),
     );
   }
 }
