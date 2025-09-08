@@ -190,7 +190,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
             'Select Year',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 0),
           Expanded(
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -212,7 +212,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue : Colors.grey[100],
+                      color: isSelected ? Color(0xff2853AF) : Colors.grey[100],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -260,7 +260,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
             'Select Month',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 0),
           Expanded(
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -281,7 +281,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue : Colors.grey[100],
+                      color: isSelected ? Color(0xff2853AF) : Colors.grey[100],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -368,7 +368,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: isSelectingYear ? Colors.blue : Colors.black,
+                      color: isSelectingYear ? Color(0xff2853AF) : Colors.black,
                       decoration:
                           isSelectingYear ? TextDecoration.underline : null,
                     ),
@@ -806,18 +806,37 @@ class _CalendarPopupState extends State<CalendarPopup> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.zero, // remove default padding
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor:
+                            Colors
+                                .transparent, // 👈 transparent, gradient comes from Ink
+                        shadowColor:
+                            Colors
+                                .transparent, // optional: removes default shadow color
                       ),
-                      child: const Text(
-                        'Apply',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF00B1D6), Color(0xFF00358D)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          child: const Text(
+                            'Apply',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),
