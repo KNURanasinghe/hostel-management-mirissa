@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/color_const.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/Widgets/AppBar/app_bar_image.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Calender/calender_pop_up.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
@@ -490,29 +491,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           children: [
             // Search bar
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
 
               child: Row(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                      gradient: LinearGradient(
-                        colors: [Color(0xFFA4EFFF), Color(0xFF00358D)],
-                      ),
-                    ),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: AssetImage('assets/img.png'),
-                    ),
-                  ),
+                  UserLogo(),
                   SizedBox(width: 16),
                   Expanded(
                     child: Container(
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: TextField(
@@ -526,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         decoration: InputDecoration(
                           hintStyle: GoogleFonts.inter(
                             fontSize: 14,
-                            color: Color(0xFF9E9E9E),
+                            color: ColorConst.textgray,
                             fontWeight: FontWeightConst.semiBold,
                           ),
                           hintText:
@@ -537,13 +526,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             image: AssetImage('assets/search.png'),
                             width: 20,
                             height: 20,
-                            color: Color(0xFF666666),
+                            color: ColorConst.textgray,
                           ),
                           suffixIcon: Image(
                             image: AssetImage('assets/location_48.png'),
                             width: 20,
                             height: 20,
-                            color: Color(0xFF666666),
+                            color: ColorConst.textgray,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
