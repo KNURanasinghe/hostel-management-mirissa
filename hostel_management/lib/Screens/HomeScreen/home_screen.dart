@@ -16,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  int selectedFilterIndex = 0; // Default first tag selected
+
   bool isSearchExpanded = false;
   int selectedTabIndex = 0; // 0 for Activities, 1 for Hostels
   late AnimationController _animationController;
@@ -156,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         children: [
           // Top bar with tabs
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             child: Row(
               children: [
                 Container(
@@ -169,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                   child: CircleAvatar(
                     radius: 20,
-                    backgroundImage: AssetImage('assets/img.png'),
+                    backgroundImage: AssetImage('assets/img.jpeg'),
                   ),
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.13),
@@ -224,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           // Content based on selected tab
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child:
                   selectedTabIndex == 0
                       ? _buildActivitiesGrid()
@@ -245,16 +247,56 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildFilterTags() {
+    final size = MediaQuery.of(context).size;
+    final tags = [
+      'Whale Watching',
+      'Diving',
+      'Surf Lesson',
+      'Yoga Class',
+      'Ayurvedic Massage',
+      'All',
+      'Safari Tours',
+      'Snorkeling',
+      'Fishing Tours',
+    ];
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          _buildFilterTag('Whale Watching', true),
-          SizedBox(width: 12),
-          _buildFilterTag('Diving', false),
-          SizedBox(width: 12),
-          _buildFilterTag('Surf Lesson', false),
-        ],
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      height: size.height * 0.055,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: tags.length,
+        itemBuilder: (context, index) {
+          final tag = tags[index];
+          final isSelected = selectedFilterIndex == index;
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedFilterIndex = index;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                decoration: BoxDecoration(
+                  color: isSelected ? Color(0xFF1A4D99) : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Color(0xFF1A4D99), width: 1),
+                ),
+                child: Text(
+                  tag,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected ? Colors.white : Color(0xFF1A4D99),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
