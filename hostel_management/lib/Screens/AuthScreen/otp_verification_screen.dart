@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/LocalServices/shared_pref_service.dart';
+import 'package:hostel_management/Screens/AuthScreen/create_new_password.dart';
+import 'package:hostel_management/Services/auth_service.dart';
+import 'package:hostel_management/Widgets/PageRoute/custom_page_route.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
 import 'package:hostel_management/Widgets/gradient_button.dart';
 
@@ -16,10 +20,12 @@ class OTPVerificationScreen extends StatefulWidget {
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   final List<TextEditingController> _controllers = List.generate(
-    4,
+    6,
     (index) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+  bool _isLoading = false;
+  bool _isResending = false;
 
   @override
   void dispose() {
@@ -40,9 +46,12 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
 
     // Handle single digit input
-    if (value.length == 1 && index < 3) {
+    if (value.length == 1 && index < 5) {
       _focusNodes[index + 1].requestFocus();
     }
+
+    // Update UI state when text changes
+    setState(() {});
   }
 
   void _onKeyEvent(KeyEvent event, int index) {
@@ -67,9 +76,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     // Clean the pasted text to only include digits
     String cleanedText = pastedText.replaceAll(RegExp(r'[^0-9]'), '');
 
-    // Limit to 4 digits maximum
-    if (cleanedText.length > 4) {
-      cleanedText = cleanedText.substring(0, 4);
+    // Limit to 6 digits maximum
+    if (cleanedText.length > 6) {
+      cleanedText = cleanedText.substring(0, 6);
     }
 
     // Clear all fields first
@@ -78,15 +87,17 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
 
     // Fill the controllers starting from the first box
-    for (int i = 0; i < cleanedText.length && i < 4; i++) {
+    for (int i = 0; i < cleanedText.length && i < 6; i++) {
       _controllers[i].text = cleanedText[i];
     }
 
     // Focus on the next empty box or the last box if all are filled
-    if (cleanedText.length < 4) {
+    if (cleanedText.length < 6) {
       _focusNodes[cleanedText.length].requestFocus();
     } else {
-      _focusNodes[3].requestFocus();
+      _focusNodes[5].requestFocus();
+      // Hide keyboard when all fields are filled
+      FocusScope.of(context).unfocus();
     }
 
     setState(() {});
@@ -100,6 +111,83 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     return _controllers.map((controller) => controller.text).join();
   }
 
+  Future<void> _verifyOTP() async {
+    if (!_isOTPComplete() || _isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userId = await SharedPrefService.getUserId();
+      final otp = _getOTP();
+      final response = await ApiService.verifyOtp(userId!, otp);
+      print('OTP Verification Response: $response');
+
+      // Hide keyboard before navigation
+      FocusScope.of(context).unfocus();
+
+      Navigator.pushReplacement(
+        context,
+        ScalePageRoute(page: CreateNewPassword()),
+      );
+    } catch (e) {
+      print('Error verifying OTP: $e');
+      // You can show a snackbar or dialog here for error handling
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to verify OTP. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _resendOTP() async {
+    if (_isResending) return;
+
+    setState(() {
+      _isResending = true;
+    });
+
+    try {
+      final response = await ApiService.forgotPassword(widget.email);
+      print('Resend OTP Response: $response');
+
+      // Clear all fields when resending
+      _clearAllFields();
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('OTP sent successfully to ${widget.email}'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      print('Error resending OTP: $e');
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to resend OTP. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isResending = false;
+        });
+      }
+    }
+  }
+
   void _clearAllFields() {
     for (var controller in _controllers) {
       controller.clear();
@@ -110,7 +198,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
   Widget _buildOTPField(int index) {
     return Container(
-      width: 56,
+      width: 48,
       height: 56,
       decoration: BoxDecoration(
         color: Color(0xFFF9FAFB),
@@ -139,7 +227,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           ),
           inputFormatters: [
             // Allow pasting of multiple digits but limit single input to 1 digit
-            LengthLimitingTextInputFormatter(4),
+            LengthLimitingTextInputFormatter(6),
             FilteringTextInputFormatter.digitsOnly,
           ],
           decoration: InputDecoration(
@@ -155,6 +243,55 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
               TextPosition(offset: _controllers[index].text.length),
             );
           },
+          onEditingComplete: () {
+            // Hide keyboard when all fields are complete
+            if (_isOTPComplete()) {
+              FocusScope.of(context).unfocus();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContinueButton() {
+    bool isComplete = _isOTPComplete();
+
+    return GestureDetector(
+      onTap: isComplete && !_isLoading ? _verifyOTP : null,
+      child: Container(
+        width: double.infinity,
+        height: 56,
+        padding: EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: isComplete ? null : Color(0xFFE5E7EB),
+          gradient:
+              isComplete
+                  ? LinearGradient(
+                    colors: [Color(0xFF0EA5E9), Color(0xFF2853AF)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  )
+                  : null,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child:
+              _isLoading
+                  ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      strokeWidth: 2,
+                    ),
+                  )
+                  : InterTextWidget(
+                    text: 'Continue',
+                    fontSize: 18,
+                    color: isComplete ? Colors.white : Color(0xFF9CA3AF),
+                    fontWeight: FontWeightConst.semiBold,
+                  ),
         ),
       ),
     );
@@ -164,7 +301,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: true, // This helps with keyboard overflow
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -227,7 +364,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   Text.rich(
                     TextSpan(
                       text:
-                          'We have just sent you 4 digit code via your\nemail ',
+                          'We have just sent you 6 digit code via your\nemail ',
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         color: Color(0xFF434E58),
@@ -255,43 +392,14 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(
-                          4,
+                          6,
                           (index) => _buildOTPField(index),
                         ),
                       ),
                       SizedBox(height: 18),
 
                       // Continue Button
-                      _isOTPComplete()
-                          ? GestureDetector(
-                            onTap: () {
-                              // Handle OTP verification
-                              String otp = _getOTP();
-                              print('OTP entered: $otp');
-                              // Add your verification logic here
-                            },
-                            child: GradientButton(
-                              text: 'Continue',
-                              width: MediaQuery.of(context).size.width,
-                            ),
-                          )
-                          : Container(
-                            width: double.infinity,
-                            height: 56,
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFE5E7EB),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Center(
-                              child: InterTextWidget(
-                                text: 'Continue',
-                                fontSize: 18,
-                                color: Color(0xFF9CA3AF),
-                                fontWeight: FontWeightConst.semiBold,
-                              ),
-                            ),
-                          ),
+                      _buildContinueButton(),
 
                       SizedBox(height: 24),
 
@@ -308,20 +416,28 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              // Handle resend code
-                              print('Resend code tapped');
-                              // Clear fields when resending
-                              _clearAllFields();
-                            },
-                            child: Text(
-                              'Resend Code',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: Color(0xFF2853AF),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            onTap: _isResending ? null : _resendOTP,
+                            child:
+                                _isResending
+                                    ? SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Color(0xFF2853AF),
+                                            ),
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                    : Text(
+                                      'Resend Code',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        color: Color(0xFF2853AF),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                           ),
                         ],
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_management/Screens/AuthScreen/auth_screen.dart';
+import 'package:hostel_management/Screens/AuthScreen/otp_verification_screen.dart';
 import 'package:hostel_management/Screens/OnBoardScreens/on_board_screen.dart';
 import 'package:hostel_management/Screens/splash_screen.dart';
 

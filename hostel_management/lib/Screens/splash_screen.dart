@@ -46,7 +46,9 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom +
+              MediaQuery.of(context).padding.bottom,
         ),
         child: Text(
           'Copy Rights by Book Now',
