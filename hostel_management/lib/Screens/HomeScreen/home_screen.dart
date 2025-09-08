@@ -442,6 +442,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
@@ -469,6 +470,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
@@ -496,6 +498,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
@@ -523,6 +526,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );

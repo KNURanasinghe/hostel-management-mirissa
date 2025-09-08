@@ -131,6 +131,7 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
@@ -158,6 +159,7 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
@@ -185,6 +187,7 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
@@ -212,6 +215,7 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
                       price1: '\$10',
                       price2: '\$30',
                       availability: '48 (532) Available',
+                      hostelImage: 'assets/hostel1st.png',
                     ),
               ),
             );
