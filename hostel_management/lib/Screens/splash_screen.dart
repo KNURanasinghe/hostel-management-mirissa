@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // <-- Add this
+import 'package:hostel_management/LocalServices/shared_pref_service.dart';
+import 'package:hostel_management/Screens/HomeScreen/home_screen.dart';
 import 'package:hostel_management/Screens/OnBoardScreens/on_board_screen.dart';
 import 'package:hostel_management/Widgets/PageRoute/custom_page_route.dart';
 
@@ -16,11 +18,23 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
+      navigateToNextScreen();
+    });
+  }
+
+  void navigateToNextScreen() async {
+    final userid = await SharedPrefService.getUserId();
+    if (userid != null) {
+      Navigator.pushReplacement(
+        context,
+        ScalePageRoute(page: const HomeScreen()),
+      );
+    } else {
       Navigator.pushReplacement(
         context,
         ScalePageRoute(page: const OnBoardScreen()),
       );
-    });
+    }
   }
 
   @override
