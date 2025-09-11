@@ -11,19 +11,25 @@ import 'package:hostel_management/Widgets/gradient_button.dart';
 
 class OTPVerificationScreen extends StatefulWidget {
   final String email;
+  final String? userId; // Add userId parameter
 
-  const OTPVerificationScreen({super.key, this.email = 'example@gmail.com'});
+  const OTPVerificationScreen({
+    super.key, 
+    required this.email,
+    this.userId, // Make it optional for backward compatibility
+  });
 
   @override
   State<OTPVerificationScreen> createState() => _OTPVerificationScreenState();
 }
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
+  // Change to 4 controllers for 4-digit OTP
   final List<TextEditingController> _controllers = List.generate(
-    6,
+    4, // Changed from 6 to 4
     (index) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode()); // Changed from 6 to 4
   bool _isLoading = false;
   bool _isResending = false;
 
@@ -46,7 +52,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
 
     // Handle single digit input
-    if (value.length == 1 && index < 5) {
+    if (value.length == 1 && index < 3) { // Changed from 5 to 3
       _focusNodes[index + 1].requestFocus();
     }
 
@@ -76,9 +82,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     // Clean the pasted text to only include digits
     String cleanedText = pastedText.replaceAll(RegExp(r'[^0-9]'), '');
 
-    // Limit to 6 digits maximum
-    if (cleanedText.length > 6) {
-      cleanedText = cleanedText.substring(0, 6);
+    // Limit to 4 digits maximum (changed from 6)
+    if (cleanedText.length > 4) {
+      cleanedText = cleanedText.substring(0, 4);
     }
 
     // Clear all fields first
@@ -87,15 +93,15 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
 
     // Fill the controllers starting from the first box
-    for (int i = 0; i < cleanedText.length && i < 6; i++) {
+    for (int i = 0; i < cleanedText.length && i < 4; i++) { // Changed from 6 to 4
       _controllers[i].text = cleanedText[i];
     }
 
     // Focus on the next empty box or the last box if all are filled
-    if (cleanedText.length < 6) {
+    if (cleanedText.length < 4) { // Changed from 6 to 4
       _focusNodes[cleanedText.length].requestFocus();
     } else {
-      _focusNodes[5].requestFocus();
+      _focusNodes[3].requestFocus(); // Changed from 5 to 3
       // Hide keyboard when all fields are filled
       FocusScope.of(context).unfocus();
     }
@@ -119,21 +125,33 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     });
 
     try {
-      final userId = await SharedPrefService.getUserId();
+      // Use userId from widget parameter or fallback to SharedPrefs
+      final userId = widget.userId ?? await SharedPrefService.getUserId();
+      
+      if (userId == null) {
+        throw Exception('User ID not found. Please restart the process.');
+      }
+
       final otp = _getOTP();
-      final response = await ApiService.verifyOtp(userId!, otp);
+      final response = await ApiService.verifyOtp(userId, otp);
       print('OTP Verification Response: $response');
 
       // Hide keyboard before navigation
       FocusScope.of(context).unfocus();
 
+      // Navigate to create new password screen with userId and verified OTP
       Navigator.pushReplacement(
         context,
-        ScalePageRoute(page: CreateNewPassword()),
+        ScalePageRoute(
+          page: CreateNewPassword(
+            userId: userId,
+            verifiedOtp: otp, // Pass the verified OTP
+          ),
+        ),
       );
     } catch (e) {
       print('Error verifying OTP: $e');
-      // You can show a snackbar or dialog here for error handling
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to verify OTP. Please try again.'),
@@ -198,7 +216,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
   Widget _buildOTPField(int index) {
     return Container(
-      width: 48,
+      width: 56, // Slightly wider for 4 fields (was 48 for 6 fields)
       height: 56,
       decoration: BoxDecoration(
         color: Color(0xFFF9FAFB),
@@ -226,8 +244,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             color: Color(0xFF111827),
           ),
           inputFormatters: [
-            // Allow pasting of multiple digits but limit single input to 1 digit
-            LengthLimitingTextInputFormatter(6),
+            // Allow pasting of multiple digits but limit to 4 digits total
+            LengthLimitingTextInputFormatter(4), // Changed from 6 to 4
             FilteringTextInputFormatter.digitsOnly,
           ],
           decoration: InputDecoration(
@@ -360,11 +378,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
                   SizedBox(height: 16),
 
-                  // Description Text
+                  // Description Text - Updated for 4-digit
                   Text.rich(
                     TextSpan(
                       text:
-                          'We have just sent you 6 digit code via your\nemail ',
+                          'We have just sent you 4 digit code via your\nemail ', // Changed from 6 to 4
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         color: Color(0xFF434E58),
@@ -392,7 +410,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(
-                          6,
+                          4, // Changed from 6 to 4
                           (index) => _buildOTPField(index),
                         ),
                       ),

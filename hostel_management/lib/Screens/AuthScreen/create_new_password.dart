@@ -1,19 +1,163 @@
+// Replace your entire create_new_password.dart with this:
+
 import 'package:flutter/material.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/Screens/AuthScreen/auth_screen.dart';
+import 'package:hostel_management/Services/auth_service.dart';
+import 'package:hostel_management/Widgets/PageRoute/custom_page_route.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
 import 'package:hostel_management/Widgets/TextBox/custom_text_box.dart';
 import 'package:hostel_management/Widgets/gradient_button.dart';
 
 class CreateNewPassword extends StatefulWidget {
-  const CreateNewPassword({super.key});
+  final String? userId;
+  final String? verifiedOtp;
+
+  const CreateNewPassword({super.key, this.userId, this.verifiedOtp});
 
   @override
   State<CreateNewPassword> createState() => _CreateNewPasswordState();
 }
 
 class _CreateNewPasswordState extends State<CreateNewPassword> {
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
+
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 20),
+                Text("Updating password..."),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Success"),
+          content: Text("Password updated successfully!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                // Navigate back to auth screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  ScalePageRoute(page: AuthScreen()),
+                  (route) => false,
+                );
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _handleResetPassword() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    if (_passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      _showErrorDialog('Please fill all fields');
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showErrorDialog('Passwords do not match');
+      return;
+    }
+
+    if (_passwordController.text.length < 6) {
+      _showErrorDialog('Password must be at least 6 characters');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    _showLoadingDialog();
+
+    try {
+      final userId = widget.userId;
+      final otp = widget.verifiedOtp;
+
+      if (userId == null || otp == null) {
+        throw Exception('Session expired. Please restart the process.');
+      }
+
+      final response = await ApiService.resetPasswordWithOtp(
+        userId,
+        otp,
+        _passwordController.text,
+      );
+
+      print('Password reset response: $response');
+
+      Navigator.of(context).pop(); // Close loading dialog
+      _showSuccessDialog(); // Show success dialog
+    } catch (e) {
+      print('Error resetting password: $e');
+      Navigator.of(context).pop(); // Close loading dialog
+      _showErrorDialog(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,71 +174,64 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
         ),
       ),
       body: SafeArea(
-        child: Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(24),
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+
               // Logo
               Container(
                 width: 80,
                 height: 80,
-                decoration: BoxDecoration(
-                  //color: Color(0xFF0EA5E9),
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle),
                 child: Center(
                   child: Image(image: AssetImage('assets/splash_logo.png')),
                 ),
               ),
               SizedBox(height: 24),
-              InterTextWidget(
-                text: 'Welcome',
-                fontSize: 24,
-                color: Color(0xFF111827),
-                fontWeight: FontWeightConst.bold,
-              ),
-              SizedBox(height: 8),
-              InterTextWidget(
-                text: 'Create a\nNew Password',
-                fontSize: 24,
-                color: Color(0xFF111827),
-                fontWeight: FontWeightConst.bold,
-              ),
 
+              InterTextWidget(
+                text: 'Create New Password',
+                fontSize: 24,
+                color: Color(0xFF111827),
+                fontWeight: FontWeightConst.bold,
+              ),
               SizedBox(height: 8),
+
               InterTextWidget(
                 text: 'Enter your new password',
                 fontSize: 16,
                 color: Color(0xFF434E58),
                 fontWeight: FontWeightConst.regular,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 32),
 
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(24),
-                  child: Column(
-                    children: [
-                      CustomTextFromBox(
-                        labelText: 'Enter your email',
-                        isPassword: false,
-                        controller: _emailController,
-                      ),
-                      SizedBox(height: 8),
-                      CustomTextFromBox(
-                        labelText: 'Enter your password',
-                        isPassword: true,
-                        controller: _passwordController,
-                      ),
-                      SizedBox(height: 8),
-                      GradientButton(
-                        text: 'Next',
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                    ],
-                  ),
+              CustomTextFromBox(
+                labelText: 'Enter new password',
+                isPassword: true,
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
+              ),
+
+              CustomTextFromBox(
+                labelText: 'Confirm new password',
+                isPassword: true,
+                controller: _confirmPasswordController,
+                focusNode: _confirmPasswordFocusNode,
+              ),
+
+              SizedBox(height: 24),
+
+              GestureDetector(
+                onTap: _isLoading ? null : _handleResetPassword,
+                child: GradientButton(
+                  text: 'Update Password',
+                  width: MediaQuery.of(context).size.width,
                 ),
               ),
+
+              SizedBox(height: 40),
             ],
           ),
         ),

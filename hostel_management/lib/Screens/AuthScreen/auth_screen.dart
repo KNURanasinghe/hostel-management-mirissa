@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
 import 'package:hostel_management/LocalServices/shared_pref_service.dart';
-import 'package:hostel_management/Screens/AuthScreen/create_new_password.dart';
 import 'package:hostel_management/Screens/AuthScreen/otp_verification_screen.dart';
 import 'package:hostel_management/Screens/HomeScreen/home_screen.dart';
 import 'package:hostel_management/Services/auth_service.dart';
@@ -27,8 +25,7 @@ class _AuthScreenState extends State<AuthScreen>
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _otpController =
-      TextEditingController(); // Add OTP controller
+  final TextEditingController _otpController = TextEditingController();
 
   bool _isLoading = false;
   String _errorMessage = '';
@@ -139,7 +136,6 @@ class _AuthScreenState extends State<AuthScreen>
 
   // Handle sign in
   Future<void> _handleSignIn() async {
-    // Hide keyboard when submitting
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -158,12 +154,11 @@ class _AuthScreenState extends State<AuthScreen>
         _emailController.text,
         _passwordController.text,
       );
-      print('Registration successful: ${response['message']}');
+      print('Login successful: ${response['message']}');
       Navigator.of(context).pop(); // Close loading dialog
       Navigator.push(context, ScalePageRoute(page: HomeScreen()));
     } catch (e) {
       Navigator.of(context).pop(); // Close loading dialog
-
       _showErrorMessage(e.toString());
       _showErrorDialog(_errorMessage);
     } finally {
@@ -175,7 +170,6 @@ class _AuthScreenState extends State<AuthScreen>
 
   // Handle sign up
   Future<void> _handleSignUp() async {
-    // Hide keyboard when submitting
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (_firstNameController.text.isEmpty ||
@@ -203,17 +197,13 @@ class _AuthScreenState extends State<AuthScreen>
         _emailController.text,
         _passwordController.text,
       );
-      // Save user ID to shared preferences
       SharedPrefService.saveUserId(response['userId']);
 
       Navigator.of(context).pop(); // Close loading dialog
       Navigator.push(context, ScalePageRoute(page: HomeScreen()));
-      // Navigate to home screen or perform other actions
       print('Registration successful: ${response['message']}');
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } catch (e) {
       Navigator.of(context).pop(); // Close loading dialog
-
       _showErrorMessage(e.toString());
       _showErrorDialog(_errorMessage);
     } finally {
@@ -223,55 +213,54 @@ class _AuthScreenState extends State<AuthScreen>
     }
   }
 
-  // Handle forgot password
   Future<void> _handleForgotPassword() async {
-    print('Forgot password for email: ${_emailController.text} $_isLoading');
-    // Hide keyboard when submitting
-    FocusManager.instance.primaryFocus?.unfocus();
+  print('Forgot password for email: ${_emailController.text}');
+  FocusManager.instance.primaryFocus?.unfocus();
 
-    if (_emailController.text.isEmpty) {
-      _showErrorMessage('Please enter your email');
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-    _showErrorMessage('');
-
-    _showLoadingDialog();
-
-    try {
-      final response = await ApiService.forgotPassword(_emailController.text);
-      print('Forgot password response: ${response['message']}');
-      Navigator.of(context).pop(); // Close loading dialog
-
-      if (response['success'] == 'OTP sent to email') {
-        // Navigate to OTP verification screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    OTPVerificationScreen(email: _emailController.text),
-          ),
-        );
-      } else {
-        print('Response body: ${response['message']}');
-        _showErrorMessage(response['message'] ?? 'Failed to send OTP');
-        _showErrorDialog(_errorMessage);
-      }
-    } catch (e) {
-      Navigator.of(context).pop(); // Close loading dialog
-
-      _showErrorMessage(e.toString());
-      _showErrorDialog(_errorMessage);
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  if (_emailController.text.isEmpty) {
+    _showErrorMessage('Please enter your email');
+    return;
   }
+
+  setState(() {
+    _isLoading = true;
+  });
+  _showErrorMessage('');
+
+  _showLoadingDialog();
+
+  try {
+    final response = await ApiService.forgotPassword(_emailController.text);
+    print('Forgot password response: $response');
+    Navigator.of(context).pop(); // Close loading dialog
+
+    // Check if request was successful
+    if (response['success'] != null && response['userId'] != null) {
+      // Navigate to OTP verification screen with userId
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OTPVerificationScreen(
+            email: _emailController.text,
+            userId: response['userId'], // Pass userId from response
+          ),
+        ),
+      );
+    } else {
+      print('Unexpected response: $response');
+      _showErrorMessage(response['message'] ?? 'Failed to send OTP');
+      _showErrorDialog(_errorMessage);
+    }
+  } catch (e) {
+    Navigator.of(context).pop(); // Close loading dialog
+    _showErrorMessage(e.toString());
+    _showErrorDialog(_errorMessage);
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
 
   Widget _buildSocialButton({
     required String text,
@@ -297,50 +286,63 @@ class _AuthScreenState extends State<AuthScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Get keyboard height
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final isKeyboardVisible = keyboardHeight > 0;
+
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight:
-                  MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).padding.top -
-                  MediaQuery.of(context).padding.bottom,
-            ),
-            child: IntrinsicHeight(
+        child: Column(
+          children: [
+            // Fixed header section
+            Container(
               child: Column(
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.12),
-                  // Logo
-                  Container(
-                    width: 80,
-                    height: 80,
+                  // Dynamic top spacing - reduces when keyboard is visible
+                  SizedBox(
+                    height:
+                        isKeyboardVisible
+                            ? MediaQuery.of(context).size.height * 0.02
+                            : MediaQuery.of(context).size.height * 0.08,
+                  ),
+
+                  // Logo - smaller when keyboard is visible
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    width: isKeyboardVisible ? 60 : 80,
+                    height: isKeyboardVisible ? 60 : 80,
                     decoration: BoxDecoration(shape: BoxShape.circle),
                     child: Center(
                       child: Image(image: AssetImage('assets/splash_logo.png')),
                     ),
                   ),
-                  SizedBox(height: 24),
 
-                  // Welcome Text
+                  SizedBox(height: isKeyboardVisible ? 12 : 24),
+
+                  // Welcome Text - smaller when keyboard is visible
                   InterTextWidget(
                     text: 'Welcome',
-                    fontSize: 24,
+                    fontSize: isKeyboardVisible ? 20 : 24,
                     color: Color(0xFF111827),
                     fontWeight: FontWeightConst.bold,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Sign in to your account or create a new one',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: Color(0xFF4B5563),
-                      fontWeight: FontWeight.w400,
+
+                  SizedBox(height: isKeyboardVisible ? 4 : 8),
+
+                  if (!isKeyboardVisible) // Hide subtitle when keyboard is visible
+                    Text(
+                      'Sign in to your account or create a new one',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: Color(0xFF4B5563),
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 32),
+
+                  SizedBox(height: isKeyboardVisible ? 16 : 32),
 
                   // Tab Bar
                   Container(
@@ -370,7 +372,8 @@ class _AuthScreenState extends State<AuthScreen>
                       ],
                     ),
                   ),
-                  SizedBox(height: 24),
+
+                  SizedBox(height: 16),
 
                   // Error message
                   if (_errorMessage.isNotEmpty)
@@ -383,33 +386,34 @@ class _AuthScreenState extends State<AuthScreen>
                       ),
                     ),
                   if (_errorMessage.isNotEmpty) SizedBox(height: 12),
-
-                  // Tab Bar View - Remove Expanded and give it a fixed height
-                  SizedBox(
-                    height:
-                        MediaQuery.of(context).size.height *
-                        0.6, // Adjust this value as needed
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _buildSignInTab(),
-                        _buildSignUpTab(),
-                        _buildForgotPasswordTab(),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
-          ),
+
+            // Scrollable content area
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildSignInTab(),
+                  _buildSignUpTab(),
+                  _buildForgotPasswordTab(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildSignInTab() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final isKeyboardVisible = keyboardHeight > 0;
+
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
         children: [
           CustomTextFromBox(
@@ -423,7 +427,7 @@ class _AuthScreenState extends State<AuthScreen>
             controller: _passwordController,
             focusNode: _passwordFocusNode,
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 20),
 
           GestureDetector(
             onTap: _isLoading ? null : _handleSignIn,
@@ -433,149 +437,28 @@ class _AuthScreenState extends State<AuthScreen>
             ),
           ),
 
-          SizedBox(height: 24),
+          SizedBox(height: isKeyboardVisible ? 12 : 24),
 
-          // Divider with or sign methods
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 62,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
-                      strokeAlign: BorderSide.strokeAlignCenter,
-                      color: const Color(0xFFE8EAEC),
-                    ),
-                  ),
+          // Conditionally show social login section
+          if (!isKeyboardVisible) ...[
+            // Divider
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(width: 50, height: 1, color: const Color(0xFFE8EAEC)),
+                SizedBox(width: 12),
+                InterTextWidget(
+                  text: 'Or Sign In with',
+                  fontSize: 13,
+                  color: Color(0xFF9CA4AB),
+                  fontWeight: FontWeightConst.regular,
                 ),
-              ),
-
-              SizedBox(width: 12),
-              InterTextWidget(
-                text: 'Or Sign In with',
-                fontSize: 14,
-                color: Color(0xFF9CA4AB),
-                fontWeight: FontWeightConst.regular,
-              ),
-              SizedBox(width: 12),
-              Container(
-                width: 62,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
-                      strokeAlign: BorderSide.strokeAlignCenter,
-                      color: const Color(0xFFE8EAEC),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 24),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSocialButton(text: 'assets/google.png', onPressed: () {}),
-              SizedBox(width: 48),
-              _buildSocialButton(text: 'assets/facebook.png', onPressed: () {}),
-            ],
-          ),
-
-          SizedBox(height: MediaQuery.of(context).size.height * 0.15),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 10,
-            ),
-            child: Text.rich(
-              TextSpan(
-                text: 'By signing up you agree to our\n ',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: Color(0xFF78828A),
-                ),
-                children: [
-                  TextSpan(
-                    text: 'Terms',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: Color(0xFF171725),
-                    ),
-                  ),
-                  TextSpan(
-                    text: ' and ',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: Color(0xFF78828A),
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'Conditions of Use',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: Color(0xFF171725),
-                    ),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSignUpTab() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            CustomTextFromBox(
-              labelText: 'Enter your first name',
-              controller: _firstNameController,
-              focusNode: _firstNameFocusNode,
-            ),
-            CustomTextFromBox(
-              labelText: 'Enter your email',
-              controller: _emailController,
-              focusNode: _emailFocusNode,
-            ),
-            CustomTextFromBox(
-              labelText: 'Enter your password',
-              isPassword: true,
-              controller: _passwordController,
-              focusNode: _passwordFocusNode,
-            ),
-            CustomTextFromBox(
-              labelText: 'Confirm your password',
-              isPassword: true,
-              controller: _confirmPasswordController,
-              focusNode: _confirmPasswordFocusNode,
-            ),
-            SizedBox(height: 8),
-
-            GestureDetector(
-              onTap: _isLoading ? null : _handleSignUp,
-              child: GradientButton(
-                text: 'Sign UP',
-                width: MediaQuery.of(context).size.width,
-              ),
+                SizedBox(width: 12),
+                Container(width: 50, height: 1, color: const Color(0xFFE8EAEC)),
+              ],
             ),
 
-            SizedBox(height: 24),
-            Text(
-              'Or Sign up with',
-              style: GoogleFonts.inter(fontSize: 14, color: Color(0xFF9CA3AF)),
-            ),
-            SizedBox(height: 24),
+            SizedBox(height: 20),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -589,62 +472,152 @@ class _AuthScreenState extends State<AuthScreen>
               ],
             ),
 
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 10,
-              ),
-              child: Text.rich(
+            SizedBox(height: 24),
+          ],
+
+          // Terms - always show
+          Text.rich(
+            TextSpan(
+              text: 'By signing up you agree to our\n ',
+              style: GoogleFonts.inter(fontSize: 13, color: Color(0xFF78828A)),
+              children: [
                 TextSpan(
-                  text: 'By signing up you agree to our\n ',
+                  text: 'Terms',
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 13,
+                    color: Color(0xFF171725),
+                  ),
+                ),
+                TextSpan(
+                  text: ' and ',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
                     color: Color(0xFF78828A),
                   ),
-                  children: [
-                    TextSpan(
-                      text: 'Terms',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: Color(0xFF171725),
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' and ',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: Color(0xFF78828A),
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'Conditions of Use',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: Color(0xFF171725),
-                      ),
-                    ),
-                  ],
                 ),
-                textAlign: TextAlign.center,
-              ),
+                TextSpan(
+                  text: 'Conditions of Use',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: Color(0xFF171725),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+
+          // Bottom padding to ensure content is scrollable
+          SizedBox(height: isKeyboardVisible ? 40 : 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSignUpTab() {
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.all(24),
+      child: Column(
+        children: [
+          CustomTextFromBox(
+            labelText: 'Enter your first name',
+            controller: _firstNameController,
+            focusNode: _firstNameFocusNode,
+          ),
+          CustomTextFromBox(
+            labelText: 'Enter your email',
+            controller: _emailController,
+            focusNode: _emailFocusNode,
+          ),
+          CustomTextFromBox(
+            labelText: 'Enter your password',
+            isPassword: true,
+            controller: _passwordController,
+            focusNode: _passwordFocusNode,
+          ),
+          CustomTextFromBox(
+            labelText: 'Confirm your password',
+            isPassword: true,
+            controller: _confirmPasswordController,
+            focusNode: _confirmPasswordFocusNode,
+          ),
+          SizedBox(height: 24),
+
+          GestureDetector(
+            onTap: _isLoading ? null : _handleSignUp,
+            child: GradientButton(
+              text: 'Sign UP',
+              width: MediaQuery.of(context).size.width,
+            ),
+          ),
+
+          SizedBox(height: 32),
+
+          Text(
+            'Or Sign up with',
+            style: GoogleFonts.inter(fontSize: 14, color: Color(0xFF9CA3AF)),
+          ),
+          SizedBox(height: 24),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildSocialButton(text: 'assets/google.png', onPressed: () {}),
+              SizedBox(width: 48),
+              _buildSocialButton(text: 'assets/facebook.png', onPressed: () {}),
+            ],
+          ),
+
+          SizedBox(height: 40),
+
+          Text.rich(
+            TextSpan(
+              text: 'By signing up you agree to our\n ',
+              style: GoogleFonts.inter(fontSize: 14, color: Color(0xFF78828A)),
+              children: [
+                TextSpan(
+                  text: 'Terms',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Color(0xFF171725),
+                  ),
+                ),
+                TextSpan(
+                  text: ' and ',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Color(0xFF78828A),
+                  ),
+                ),
+                TextSpan(
+                  text: 'Conditions of Use',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Color(0xFF171725),
+                  ),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildForgotPasswordTab() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+      padding: EdgeInsets.all(24),
       child: Column(
         children: [
+          SizedBox(height: 20),
           CustomTextFromBox(
             labelText: 'Enter your email',
             controller: _emailController,
             focusNode: _emailFocusNode,
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 24),
 
           GestureDetector(
             onTap: _isLoading ? null : _handleForgotPassword,
@@ -653,7 +626,8 @@ class _AuthScreenState extends State<AuthScreen>
               width: MediaQuery.of(context).size.width,
             ),
           ),
-          SizedBox(height: 100),
+
+          Spacer(),
         ],
       ),
     );

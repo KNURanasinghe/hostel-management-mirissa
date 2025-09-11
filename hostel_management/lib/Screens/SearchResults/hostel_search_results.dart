@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
 import 'package:hostel_management/Screens/ViewScreen/view_screen.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_user_set.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
-import 'package:hostel_management/Widgets/activity_main_card.dart';
 import 'package:hostel_management/Widgets/filter_tags.dart';
 import 'package:hostel_management/Widgets/hostels_main_card.dart';
 

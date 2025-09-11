@@ -665,7 +665,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
                                 height: 32,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Colors.blue,
+                                  color: Color(0xff1A4D99),
                                 ),
                                 child: const Icon(
                                   Icons.add,
@@ -740,7 +740,7 @@ class _CalendarPopupState extends State<CalendarPopup> {
                                 height: 32,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Colors.blue,
+                                  color: Color(0xff1A4D99),
                                 ),
                                 child: const Icon(
                                   Icons.add,

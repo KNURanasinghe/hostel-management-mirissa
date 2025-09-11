@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -48,7 +49,7 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  // Forgot Password (Send OTP)
+  // Forgot Password (Send 4-digit OTP)
   static Future<Map<String, dynamic>> forgotPassword(String email) async {
     final url = Uri.parse('$baseUrl/auth/request-reset');
     final response = await http.post(
@@ -60,18 +61,44 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  // Verify OTP
-  static Future<Map<String, dynamic>> verifyOtp(String uid, String otp) async {
+  // Verify OTP (4-digit)
+  static Future<Map<String, dynamic>> verifyOtp(
+    String userId,
+    String otp,
+  ) async {
     final url = Uri.parse('$baseUrl/auth/verify-otp');
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"userId": uid, "otp": otp}),
+      body: jsonEncode({"userId": userId, "otp": otp}),
     );
+    print('Response body verify OTP: ${response.body}');
     return _handleResponse(response);
   }
 
-  // Reset Password
+  // Make sure this method exists in your auth_service.dart:
+  static Future<Map<String, dynamic>> resetPasswordWithOtp(
+    String userId,
+    String otp,
+    String newPassword,
+  ) async {
+    final url = Uri.parse(
+      '$baseUrl/auth/reset-password-otp',
+    ); // Note: not /reset-password
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "userId": userId,
+        "otp": otp,
+        "newPassword": newPassword,
+      }),
+    );
+    print('Response body reset password: ${response.body}');
+    return _handleResponse(response);
+  }
+
+  // Legacy Reset Password (keep for backward compatibility)
   static Future<Map<String, dynamic>> resetPassword(
     String email,
     String newPassword,
