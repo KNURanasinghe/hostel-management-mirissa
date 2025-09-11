@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
 import 'package:hostel_management/Screens/ViewScreen/view_screen.dart';
+import 'package:hostel_management/Screens/booking_screen.dart';
+import 'package:hostel_management/Screens/profile_screen.dart'
+    show ProfileScreen;
+import 'package:hostel_management/Screens/saved_screen.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_user_set.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
@@ -85,10 +89,31 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
           ),
           // Bottom navigation
           BottomNavigationBarComponent(
-            isHomeActive: true,
+            currentIndex: 0,
             onItemSelected: (index) {
-              // Handle navigation item selection
-              print('Selected index: $index');
+              switch (index) {
+                case 0:
+                  // Already on Home - do nothing or refresh
+                  break;
+                case 1:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookingScreen()),
+                  );
+                  break;
+                case 2:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SavedScreen()),
+                  );
+                  break;
+                case 3:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileScreen()),
+                  );
+                  break;
+              }
             },
           ),
         ],

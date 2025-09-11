@@ -197,6 +197,7 @@ class _AuthScreenState extends State<AuthScreen>
         _emailController.text,
         _passwordController.text,
       );
+      print('response: ${response['userId']}');
       SharedPrefService.saveUserId(response['userId']);
 
       Navigator.of(context).pop(); // Close loading dialog
@@ -214,53 +215,54 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Future<void> _handleForgotPassword() async {
-  print('Forgot password for email: ${_emailController.text}');
-  FocusManager.instance.primaryFocus?.unfocus();
+    print('Forgot password for email: ${_emailController.text}');
+    FocusManager.instance.primaryFocus?.unfocus();
 
-  if (_emailController.text.isEmpty) {
-    _showErrorMessage('Please enter your email');
-    return;
-  }
-
-  setState(() {
-    _isLoading = true;
-  });
-  _showErrorMessage('');
-
-  _showLoadingDialog();
-
-  try {
-    final response = await ApiService.forgotPassword(_emailController.text);
-    print('Forgot password response: $response');
-    Navigator.of(context).pop(); // Close loading dialog
-
-    // Check if request was successful
-    if (response['success'] != null && response['userId'] != null) {
-      // Navigate to OTP verification screen with userId
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OTPVerificationScreen(
-            email: _emailController.text,
-            userId: response['userId'], // Pass userId from response
-          ),
-        ),
-      );
-    } else {
-      print('Unexpected response: $response');
-      _showErrorMessage(response['message'] ?? 'Failed to send OTP');
-      _showErrorDialog(_errorMessage);
+    if (_emailController.text.isEmpty) {
+      _showErrorMessage('Please enter your email');
+      return;
     }
-  } catch (e) {
-    Navigator.of(context).pop(); // Close loading dialog
-    _showErrorMessage(e.toString());
-    _showErrorDialog(_errorMessage);
-  } finally {
+
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
+    _showErrorMessage('');
+
+    _showLoadingDialog();
+
+    try {
+      final response = await ApiService.forgotPassword(_emailController.text);
+      print('Forgot password response: $response');
+      Navigator.of(context).pop(); // Close loading dialog
+
+      // Check if request was successful
+      if (response['success'] != null && response['userId'] != null) {
+        // Navigate to OTP verification screen with userId
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => OTPVerificationScreen(
+                  email: _emailController.text,
+                  userId: response['userId'], // Pass userId from response
+                ),
+          ),
+        );
+      } else {
+        print('Unexpected response: $response');
+        _showErrorMessage(response['message'] ?? 'Failed to send OTP');
+        _showErrorDialog(_errorMessage);
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Close loading dialog
+      _showErrorMessage(e.toString());
+      _showErrorDialog(_errorMessage);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
-}
 
   Widget _buildSocialButton({
     required String text,

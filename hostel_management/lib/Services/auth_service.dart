@@ -114,7 +114,7 @@ class ApiService {
 
   // Private method to handle response
   static Map<String, dynamic> _handleResponse(http.Response response) {
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
       final error = jsonDecode(response.body);

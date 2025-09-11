@@ -3,12 +3,12 @@ import 'package:hostel_management/Const/font_weight_const.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
 
 class BottomNavigationBarComponent extends StatelessWidget {
-  final bool isHomeActive;
+  final int currentIndex; // Changed from isHomeActive
   final Function(int)? onItemSelected;
 
   const BottomNavigationBarComponent({
     super.key,
-    this.isHomeActive = true,
+    this.currentIndex = 0, // Default to home (index 0)
     this.onItemSelected,
   });
 
@@ -33,11 +33,26 @@ class BottomNavigationBarComponent extends StatelessWidget {
             'assets/bottom_nav/house.png',
             'Home',
             0,
-            isHomeActive,
+            currentIndex == 0 ? true : false, // Check if current index is 0
           ),
-          _buildBottomNavItem('assets/bottom_nav/booking.png', '', 1, false),
-          _buildBottomNavItem('assets/bottom_nav/save.png', '', 2, false),
-          _buildBottomNavItem('assets/bottom_nav/profile.png', '', 3, false),
+          _buildBottomNavItem(
+            'assets/bottom_nav/booking.png',
+            'Booking', // Add text for when active
+            1,
+            currentIndex == 1 ? true : false, // Check if current index is 1
+          ),
+          _buildBottomNavItem(
+            'assets/bottom_nav/save.png',
+            'Saved', // Add text for when active
+            2,
+            currentIndex == 2 ? true : false, // Check if current index is 2
+          ),
+          _buildBottomNavItem(
+            'assets/bottom_nav/profile.png',
+            'Profile', // Add text for when active
+            3,
+            currentIndex == 3 ? true : false, // Check if current index is 3
+          ),
         ],
       ),
     );
@@ -49,6 +64,7 @@ class BottomNavigationBarComponent extends StatelessWidget {
     int index,
     bool isActive,
   ) {
+    print('isActive: $isActive, index: $index text: $text');
     return GestureDetector(
       onTap: () => onItemSelected?.call(index),
       child: Container(
@@ -62,7 +78,8 @@ class BottomNavigationBarComponent extends StatelessWidget {
               color: isActive ? Colors.blue : Colors.grey,
             ),
             const SizedBox(width: 4),
-            if (isActive)
+            if (isActive &&
+                text.isNotEmpty) // Only show text if active and text exists
               InterTextWidget(
                 text: text,
                 fontSize: 10,
