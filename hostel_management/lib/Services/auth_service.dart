@@ -11,12 +11,18 @@ class ApiService {
     String name,
     String email,
     String password,
+    String? deviceId,
   ) async {
     final url = Uri.parse('$baseUrl/auth/register');
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"name": name, "email": email, "password": password}),
+      body: jsonEncode({
+        "name": name,
+        "email": email,
+        "password": password,
+        "deviceId": deviceId,
+      }),
     );
     print('Response body: ${response.body}');
     return _handleResponse(response);

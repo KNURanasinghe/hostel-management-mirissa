@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/LocalServices/onesignal_service.dart';
 import 'package:hostel_management/LocalServices/shared_pref_service.dart';
 import 'package:hostel_management/Screens/AuthScreen/otp_verification_screen.dart';
 import 'package:hostel_management/Screens/HomeScreen/home_screen.dart';
@@ -192,10 +193,13 @@ class _AuthScreenState extends State<AuthScreen>
     _showLoadingDialog();
 
     try {
+      Future.delayed(Duration(milliseconds: 100));
+      final deviceID = await OneSignalService.instance.getDeviceId();
       final response = await ApiService.register(
         _firstNameController.text,
         _emailController.text,
         _passwordController.text,
+        deviceID,
       );
       print('response: ${response['userId']}');
       SharedPrefService.saveUserId(response['userId']);

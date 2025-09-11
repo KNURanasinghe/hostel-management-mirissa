@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // <-- Add this
+import 'package:hostel_management/LocalServices/onesignal_service.dart';
 import 'package:hostel_management/LocalServices/shared_pref_service.dart';
 import 'package:hostel_management/Screens/HomeScreen/home_screen.dart';
 import 'package:hostel_management/Screens/OnBoardScreens/on_board_screen.dart';
@@ -14,11 +15,14 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String? deviceID = '';
   @override
   void initState() {
     super.initState();
+
     Future.delayed(const Duration(seconds: 3), () {
       navigateToNextScreen();
+      getdeviceId();
     });
   }
 
@@ -34,6 +38,15 @@ class _SplashScreenState extends State<SplashScreen> {
         context,
         ScalePageRoute(page: const OnBoardScreen()),
       );
+    }
+  }
+
+  Future<void> getdeviceId() async {
+    try {
+      deviceID = await OneSignalService.instance.getDeviceId();
+      print('Device ID: $deviceID');
+    } catch (e) {
+      print('Error getting device ID: $e');
     }
   }
 
