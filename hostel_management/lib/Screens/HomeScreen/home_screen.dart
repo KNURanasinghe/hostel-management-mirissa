@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_management/Const/color_const.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
-import 'package:hostel_management/Screens/AuthScreen/auth_screen.dart';
 import 'package:hostel_management/Screens/ViewScreen/view_screen.dart';
 import 'package:hostel_management/Screens/booking_screen.dart';
 import 'package:hostel_management/Screens/profile_screen.dart';
@@ -11,12 +10,10 @@ import 'package:hostel_management/Screens/saved_screen.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_image.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Calender/calender_pop_up.dart';
-import 'package:hostel_management/Widgets/PageRoute/custom_page_route.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
 import 'package:hostel_management/Widgets/activity_main_card.dart';
 import 'package:hostel_management/Widgets/hostels_main_card.dart'
     show HostelCard;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -454,12 +451,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             width: 1,
                           ),
                         ),
-                        child: InterTextWidget(
-                          text: tag,
-                          fontSize: 13,
-                          color: isSelected ? Colors.white : Color(0xFF1A4D99),
-                          fontWeight: FontWeightConst.semiBold,
-                          letterSpacing: 0,
+                        child: Center(
+                          child: InterTextWidget(
+                            text: tag,
+                            fontSize: 13,
+                            color:
+                                isSelected ? Colors.white : Color(0xFF1A4D99),
+                            fontWeight: FontWeightConst.semiBold,
+                            letterSpacing: 0,
+                          ),
                         ),
                       )
                       .animate(target: isSelected ? 1 : 0)
@@ -487,6 +487,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildActivitiesGrid() {
     final activities = [
+      {
+        'rating': '4.8',
+        'imageUrl': 'assets/activity_card.png',
+        'price': '\$12',
+        'duration': '2-3 hrs',
+        'capacity': '11',
+        'activityName': 'Whale Watching Club Mirissa',
+        'location': 'Mirissa',
+        'trip': false,
+        'hasWhaleIcon': true,
+      },
+      {
+        'rating': '5.0',
+        'imageUrl': 'assets/act_surf.png',
+        'price': '\$25',
+        'duration': '4-5 hrs',
+        'capacity': '8',
+        'activityName': 'Charly\'s Surf School Club Mirissa',
+        'location': 'Mirissa',
+        'trip': false,
+        'hasWhaleIcon': false,
+      },
+      {
+        'rating': '4.6',
+        'imageUrl': 'assets/act_whale.png',
+        'price': '\$15',
+        'duration': '2-3 hrs',
+        'capacity': '15',
+        'activityName': 'Whale Watching Club Mirissa',
+        'location': 'Mirissa',
+        'trip': true,
+        'hasWhaleIcon': false,
+      },
+      {
+        'rating': '4.5',
+        'imageUrl': 'assets/act_div.png',
+        'price': '\$30',
+        'duration': '3-4 hrs',
+        'capacity': '12',
+        'activityName': 'Diving School Club Mirissa',
+        'location': 'Mirissa',
+        'trip': false,
+        'hasWhaleIcon': false,
+      },
       {
         'rating': '4.8',
         'imageUrl': 'assets/activity_card.png',

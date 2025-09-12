@@ -33,8 +33,8 @@ class GradientButton extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                     gradient: LinearGradient(
-                      begin: Alignment(0.00, 0.50),
-                      end: Alignment(1.00, 0.50),
+                      begin: Alignment(0.1, 0.5), // Start closer to center
+                      end: Alignment(0.9, 0.5), // End closer to center
                       colors: [
                         const Color(0xFF00B1D6),
                         const Color(0xFF00358D),

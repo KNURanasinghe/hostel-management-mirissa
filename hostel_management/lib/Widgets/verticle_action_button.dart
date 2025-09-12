@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_management/Widgets/TopDownSheet/rating_sheet.dart';
+import 'package:hostel_management/Widgets/TopDownSheet/save_sheet.dart'; // Add this import
+import 'package:hostel_management/Widgets/TopDownSheet/share_sheet.dart';
 
 class VerticleActionButton extends StatelessWidget {
   const VerticleActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       children: [
         GestureDetector(
@@ -51,7 +54,8 @@ class VerticleActionButton extends StatelessWidget {
         ),
         const SizedBox(height: 17),
         GestureDetector(
-          onTap: () => _showShareSheet(context), // 👈 open bottom sheet
+          onTap:
+              () => ShareSheet().showShareSheet(context), // Share functionality
           child: ClipOval(
             child: Container(
               width: 43,
@@ -70,17 +74,20 @@ class VerticleActionButton extends StatelessWidget {
         ),
 
         const SizedBox(height: 17),
-        ClipOval(
-          child: Container(
-            width: 43,
-            height: 43,
-            color: Colors.white.withOpacity(0.5),
-            child: Center(
-              child: Image.asset(
-                'assets/save_reals.png',
-                width: 24,
-                height: 24,
-                color: Colors.white,
+        GestureDetector(
+          onTap: () => SaveSheet().showSaveSheet(context), // 👈 Add this line
+          child: ClipOval(
+            child: Container(
+              width: 43,
+              height: 43,
+              color: Colors.white.withOpacity(0.5),
+              child: Center(
+                child: Image.asset(
+                  'assets/save_reals.png',
+                  width: 24,
+                  height: 24,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -89,6 +96,8 @@ class VerticleActionButton extends StatelessWidget {
     );
   }
 }
+
+// Rest of your existing code remains the same...
 
 void _showTopDraggableSheet(BuildContext context) {
   showGeneralDialog(
@@ -171,96 +180,7 @@ void _showTopDraggableSheet(BuildContext context) {
 }
 
 // Simple share sheet implementation
-void _showShareSheet(BuildContext context) {
-  showGeneralDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: '',
-    barrierColor: Colors.black.withOpacity(0.4), // dim background
-    transitionDuration: const Duration(milliseconds: 300),
-    pageBuilder: (context, anim1, anim2) {
-      return Stack(
-        children: [
-          // ✅ Hostel card on top
-          // ✅ ActivityCard on top
-          // ✅ Hostel card on top
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Material(
-                elevation: 8,
-                borderRadius: BorderRadius.circular(20),
-                clipBehavior: Clip.antiAlias,
-                child: Container(
-                  width: 200,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        "assets/activity_card.jpeg",
-                        fit: BoxFit.cover,
-                        height: 180,
-                        width: double.infinity,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Hostel First",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const Text("\$10  •  \$30  •  Dorm / Private Available"),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    },
-    transitionBuilder: (context, anim1, anim2, child) {
-      final curvedValue = Curves.easeOut.transform(anim1.value) - 1.0;
-      return Transform.translate(
-        offset: Offset(0, curvedValue * -50),
-        child: child,
-      );
-    },
-  );
-}
-
-Widget _buildContact(String asset, String name) {
-  return Padding(
-    padding: const EdgeInsets.only(right: 12),
-    child: Column(
-      children: [
-        CircleAvatar(radius: 25, backgroundImage: AssetImage(asset)),
-        const SizedBox(height: 6),
-        Text(name, style: const TextStyle(fontSize: 12)),
-      ],
-    ),
-  );
-}
-
-Widget _buildShareIcon(IconData icon, String label) {
-  return Column(
-    children: [
-      CircleAvatar(
-        radius: 25,
-        backgroundColor: Colors.grey[200],
-        child: Icon(icon, color: Colors.black),
-      ),
-      const SizedBox(height: 6),
-      Text(label, style: const TextStyle(fontSize: 12)),
-    ],
-  );
-}
+// Updated share sheet implementation
 
 /// Custom Top Draggable Sheet
 class _TopDraggableSheet extends StatefulWidget {

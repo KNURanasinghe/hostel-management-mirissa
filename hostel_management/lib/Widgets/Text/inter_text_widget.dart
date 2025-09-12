@@ -26,6 +26,7 @@ class InterTextWidget extends StatelessWidget {
         color: color,
         fontWeight: fontWeight,
         letterSpacing: 0.5,
+        decoration: TextDecoration.none,
       ),
     );
   }
