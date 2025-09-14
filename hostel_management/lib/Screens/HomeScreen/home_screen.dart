@@ -25,7 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int selectedFilterIndex = 0;
   bool isSearchExpanded = false;
-  int selectedTabIndex = 0;
+  int selectedTabIndex = 1;
   final TextEditingController _searchController = TextEditingController();
 
   // PageView controllers for both normal and search modes

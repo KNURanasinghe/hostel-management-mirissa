@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/Screens/create_rating.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_image.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_user_set.dart';
+import 'package:hostel_management/Widgets/PageRoute/custom_page_route.dart';
 import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
 import 'package:hostel_management/Widgets/filter_tags.dart';
 import 'package:hostel_management/Widgets/verticle_action_button.dart';
@@ -280,28 +282,36 @@ class _ViewScreenState extends State<ViewScreen> {
                         const Spacer(),
 
                         // Choose Room Button
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          height: 40,
-                          decoration: ShapeDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment(0.00, 0.50),
-                              end: Alignment(1.00, 0.50),
-                              colors: [
-                                const Color(0xFF00B1D6),
-                                const Color(0xFF00358D),
-                              ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              SlidePageRoute(page: CreateRating()),
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: 40,
+                            decoration: ShapeDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment(0.00, 0.50),
+                                end: Alignment(1.00, 0.50),
+                                colors: [
+                                  const Color(0xFF00B1D6),
+                                  const Color(0xFF00358D),
+                                ],
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: Center(
-                            child: InterTextWidget(
-                              text: 'Choose Room',
-                              fontSize: 18,
-                              color: Color(0xFFFEFEFE),
-                              fontWeight: FontWeightConst.semiBold,
+                            child: Center(
+                              child: InterTextWidget(
+                                text: 'Choose Room',
+                                fontSize: 18,
+                                color: Color(0xFFFEFEFE),
+                                fontWeight: FontWeightConst.semiBold,
+                              ),
                             ),
                           ),
                         ),

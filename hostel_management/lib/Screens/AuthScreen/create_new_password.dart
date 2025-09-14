@@ -1,6 +1,7 @@
 // Replace your entire create_new_password.dart with this:
 
 import 'package:flutter/material.dart';
+import 'package:hostel_management/Const/const.dart';
 import 'package:hostel_management/Const/font_weight_const.dart';
 import 'package:hostel_management/Screens/AuthScreen/auth_screen.dart';
 import 'package:hostel_management/Services/auth_service.dart';
@@ -83,20 +84,63 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Success"),
-          content: Text("Password updated successfully!"),
+          title: Column(
+            children: [
+              Image.asset("assets/success_icon.png", height: 68, width: 68),
+              SizedBox(height: 10),
+              InterTextWidget(
+                text: "Success",
+                fontSize: 18,
+                color: Color(0xFF171725),
+                fontWeight: FontWeightConst.semiBold,
+              ),
+            ],
+          ),
+          content: InterTextWidget(
+            text: "Your password is successfully created",
+            fontSize: 14,
+            color: Color(0xFF66707A),
+            fontWeight: FontWeightConst.semiBold,
+          ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-                // Navigate back to auth screen
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  ScalePageRoute(page: AuthScreen()),
-                  (route) => false,
-                );
-              },
-              child: Text("OK"),
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+
+                  // Navigate back to auth screen
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    ScalePageRoute(page: AuthScreen()),
+                    (route) => false,
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  height: MediaQuery.of(context).size.width * 0.1,
+                  decoration: ShapeDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(0.1, 0.5), // Start closer to center
+                      end: Alignment(0.9, 0.5), // End closer to center
+                      colors: [
+                        const Color(0xFF00B1D6),
+                        const Color(0xFF00358D),
+                      ],
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Center(
+                    child: InterTextWidget(
+                      text: "Continue",
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );

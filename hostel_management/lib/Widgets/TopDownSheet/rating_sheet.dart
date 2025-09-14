@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hostel_management/Const/font_weight_const.dart';
+import 'package:hostel_management/Widgets/Text/inter_text_widget.dart';
 
 class RatingSheetTop extends StatefulWidget {
   const RatingSheetTop({super.key});
@@ -181,15 +184,15 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(18.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 10),
+                            SizedBox(height: screenHeight * 0.03),
 
                             if (_isExpanded) ...[
                               _buildHeader(),
-                              const SizedBox(height: 16),
+                              SizedBox(height: screenHeight * 0.02),
                             ],
 
                             _buildFilterButtons(),
@@ -300,9 +303,11 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "4.8",
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        InterTextWidget(
+          text: "4.8",
+          fontSize: 32,
+          color: Color(0xFF171725),
+          fontWeight: FontWeightConst.semiBold,
         ),
         const SizedBox(height: 2),
         Row(
@@ -316,9 +321,15 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
           }),
         ),
         const SizedBox(height: 5),
-        const Text(
-          "Based on 532 review",
-          style: TextStyle(fontSize: 11, color: Colors.grey),
+        // const Text(
+        //   "Based on 532 review",
+        //   style: TextStyle(fontSize: 11, color: Colors.grey),
+        // ),
+        InterTextWidget(
+          text: 'Based on 532 review',
+          fontSize: 12,
+          color: Color(0xFF9CA4AB),
+          fontWeight: FontWeightConst.medium,
         ),
       ],
     );
@@ -384,9 +395,11 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
                         Expanded(
                           child: Text(
                             "${review.userName} (${review.reviewCount} Reviews)",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
+
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeightConst.semiBold,
                               fontSize: 14,
+                              color: Color(0xff171725),
                             ),
                             softWrap: true, // Allow text to wrap
                             maxLines: 2, // Optional: Limit to 2 lines
@@ -395,16 +408,19 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
                         const SizedBox(width: 10),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.star_rounded,
+                            Image.asset(
+                              'assets/yellow_start.png',
+                              width: 12,
+                              height: 12,
                               color: Colors.amber,
-                              size: 20,
                             ),
                             const SizedBox(width: 2),
                             Text(
                               review.rating.toString(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeightConst.semiBold,
+                                fontSize: 12,
+                                color: Color(0xff171725),
                               ),
                             ),
                           ],
@@ -420,15 +436,19 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 50.0,
-              vertical: 10.0,
+              vertical: 5.0,
             ),
             child: Text(
               review.text,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: GoogleFonts.inter(
+                fontWeight: FontWeightConst.medium,
+                fontSize: 12,
+                color: Color(0xff9CA4AB),
+              ),
             ),
           ),
         ],
@@ -438,12 +458,12 @@ class _RatingSheetTopState extends State<RatingSheetTop> {
 
   Widget _buildHandle() {
     return Container(
-      width: 130,
-      height: 5,
+      width: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.width * 0.005,
       margin: const EdgeInsets.only(top: 8, bottom: 16),
       decoration: BoxDecoration(
         color: const Color(0xFF6E6969),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
       ),
     );
   }

@@ -28,6 +28,8 @@ class InterTextWidget extends StatelessWidget {
         letterSpacing: 0.5,
         decoration: TextDecoration.none,
       ),
+      softWrap: true,
+      maxLines: 2,
     );
   }
 }
