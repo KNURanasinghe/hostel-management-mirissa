@@ -740,10 +740,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         final totalBeds = hostel['totalBeds']?.toString() ?? '0';
 
         // Get main image (use first image or fallback)
-        final images = hostel['images'] as List<dynamic>?;
+        final images = hostel['videos'] as List<dynamic>?;
         final imageUrl =
             (images != null && images.isNotEmpty)
-                ? images[0]
+                ? images[0]['thumbnail']
                 : 'assets/home_card.png'; // fallback to local asset
 
         return HostelCard(
