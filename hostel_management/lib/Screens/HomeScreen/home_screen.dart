@@ -7,6 +7,7 @@ import 'package:hostel_management/Screens/ViewScreen/view_screen.dart';
 import 'package:hostel_management/Screens/booking_screen.dart';
 import 'package:hostel_management/Screens/profile_screen.dart';
 import 'package:hostel_management/Screens/saved_screen.dart';
+import 'package:hostel_management/Services/hostel_service.dart';
 import 'package:hostel_management/Widgets/AppBar/app_bar_image.dart';
 import 'package:hostel_management/Widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:hostel_management/Widgets/Calender/calender_pop_up.dart';
@@ -36,9 +37,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late Animation<double> _calendarScaleAnimation;
   late Animation<Offset> _calendarSlideAnimation;
 
+  List<dynamic> hostels = [];
+  bool isLoadingHostels = true;
+  String? hostelError;
+
   @override
   void initState() {
     super.initState();
+    getAllHostels();
 
     // Initialize PageControllers
     _mainPageController = PageController(initialPage: selectedTabIndex);
@@ -65,6 +71,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         curve: Curves.easeOutBack,
       ),
     );
+  }
+
+  Future<void> getAllHostels() async {
+    try {
+      setState(() {
+        isLoadingHostels = true;
+        hostelError = null;
+      });
+
+      final result = await HostelService.getHostels();
+      print('ui all hostels $result');
+
+      if (result['success'] == true && result['hostels'] != null) {
+        setState(() {
+          hostels = result['hostels'];
+          isLoadingHostels = false;
+        });
+      } else {
+        setState(() {
+          hostelError = 'Failed to load hostels';
+          isLoadingHostels = false;
+        });
+      }
+    } catch (e) {
+      print('ui all hostels error $e');
+      setState(() {
+        hostelError = 'Error loading hostels: $e';
+        isLoadingHostels = false;
+      });
+    }
   }
 
   @override
@@ -616,44 +652,58 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildHostelsGrid() {
-    final hostels = [
-      {
-        'rating': '4.8',
-        'imageUrl': 'assets/home_card.png',
-        'price1': '\$10',
-        'price2': '\$30',
-        'beds': '11',
-        'hostelName': 'Hostel Five Minus',
-        'location': 'Hangover Hostels',
-      },
-      {
-        'rating': '4.5',
-        'imageUrl': 'assets/ab.png',
-        'price1': '\$15',
-        'price2': '\$45',
-        'beds': '8',
-        'hostelName': 'Hostel Five Minus',
-        'location': 'Hangover Hostels',
-      },
-      {
-        'rating': '4.6',
-        'imageUrl': 'assets/c.jpeg',
-        'price1': '\$12',
-        'price2': '\$35',
-        'beds': '15',
-        'hostelName': 'JJ Hostel Mirissa',
-        'location': 'SATORI BEACH HOUSE',
-      },
-      {
-        'rating': '4.9',
-        'imageUrl': 'assets/d.jpeg',
-        'price1': '\$18',
-        'price2': '\$55',
-        'beds': '12',
-        'hostelName': 'JJ Hostel Mirissa',
-        'location': 'SATORI BEACH HOUSE',
-      },
-    ];
+    if (isLoadingHostels) {
+      return Center(
+        child: CircularProgressIndicator(
+          color: ColorConst.buttonbackgroundBlue,
+        ),
+      );
+    }
+
+    if (hostelError != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: Colors.grey[400]),
+            SizedBox(height: 16),
+            InterTextWidget(
+              text: hostelError!,
+              fontSize: 16,
+              color: Colors.grey[600]!,
+              fontWeight: FontWeightConst.medium,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: getAllHostels,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorConst.buttonbackgroundBlue,
+                foregroundColor: Colors.white,
+              ),
+              child: Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (hostels.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.home_outlined, size: 48, color: Colors.grey[400]),
+            SizedBox(height: 16),
+            InterTextWidget(
+              text: 'No hostels available',
+              fontSize: 16,
+              color: Colors.grey[600]!,
+              fontWeight: FontWeightConst.medium,
+            ),
+          ],
+        ),
+      );
+    }
 
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -665,29 +715,61 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       itemCount: hostels.length,
       itemBuilder: (context, index) {
         final hostel = hostels[index];
+
+        // Extract data from API response
+        final hostelId = hostel['_id'] ?? '';
+        final hostelName = hostel['name'] ?? 'Unknown Hostel';
+        final location = hostel['location'];
+        final locationText =
+            location != null
+                ? '${location['city'] ?? ''}, ${location['country'] ?? ''}'
+                : 'Unknown Location';
+
+        // Get rating (convert to string with 1 decimal place)
+        final rating = hostel['rating']?['overall'] ?? 0;
+        final ratingText = rating > 0 ? rating.toStringAsFixed(1) : '0.0';
+
+        // Get price range
+        final priceRange = hostel['priceRange'];
+        final minPrice = priceRange?['min']?.toString() ?? '0';
+        final maxPrice = priceRange?['max']?.toString() ?? '0';
+        final price1 = '\$$minPrice';
+        final price2 = '\$$maxPrice';
+
+        // Get total beds
+        final totalBeds = hostel['totalBeds']?.toString() ?? '0';
+
+        // Get main image (use first image or fallback)
+        final images = hostel['images'] as List<dynamic>?;
+        final imageUrl =
+            (images != null && images.isNotEmpty)
+                ? images[0]
+                : 'assets/home_card.png'; // fallback to local asset
+
         return HostelCard(
-              rating: hostel['rating'] as String,
-              imageUrl: hostel['imageUrl'] as String,
-              price1: hostel['price1'] as String,
-              price2: hostel['price2'] as String,
-              beds: hostel['beds'] as String,
-              hostelName: hostel['hostelName'] as String,
-              location: hostel['location'] as String,
-              hostelImg: 'assets/hostel1st.png',
+              rating: ratingText,
+              imageUrl: imageUrl,
+              price1: price1,
+              price2: price2,
+              beds: totalBeds,
+              hostelName: hostelName,
+              location: locationText,
+              hostelImg:
+                  'assets/hostel1st.png', // keep this as local asset for now
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
                         (context) => ViewScreen(
-                          backgroundImage: hostel['imageUrl'] as String,
-                          hostelName: 'Hostel First Mirissa',
-                          description: 'Lorem ipsum alviflagrideridat.',
-                          location: 'Mirissa',
-                          price1: '\$10',
-                          price2: '\$30',
-                          availability: '48 (532) Available',
-                          hostelImage: 'assets/hostel1st.png',
+                          hostelList:
+                              hostels
+                                  .map(
+                                    (hostel) =>
+                                        Map<String, dynamic>.from(hostel),
+                                  )
+                                  .toList(), // Pass the entire hostel object
+                          initialIndex: index,
                         ),
                   ),
                 );
@@ -705,6 +787,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             );
       },
     );
+  }
+
+  String _formatRating(dynamic rating) {
+    if (rating == null) return '0.0';
+    if (rating is num) {
+      return rating > 0 ? rating.toStringAsFixed(1) : '0.0';
+    }
+    return '0.0';
   }
 
   Widget _buildSearchOverlay() {

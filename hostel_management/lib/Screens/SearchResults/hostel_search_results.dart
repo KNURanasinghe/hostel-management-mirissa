@@ -142,22 +142,22 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
           location: 'Hangover Hostels',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ViewScreen(
-                      backgroundImage: 'assets/home_card.png',
-                      hostelName: 'Hostel First Mirissa',
-                      description: 'Lorem ipsum alviflagrideridat.',
-                      location: 'Mirissa',
-                      price1: '\$10',
-                      price2: '\$30',
-                      availability: '48 (532) Available',
-                      hostelImage: 'assets/hostel1st.png',
-                    ),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder:
+            //         (context) => ViewScreen(
+            //           backgroundImage: 'assets/home_card.png',
+            //           hostelName: 'Hostel First Mirissa',
+            //           description: 'Lorem ipsum alviflagrideridat.',
+            //           location: 'Mirissa',
+            //           price1: '\$10',
+            //           price2: '\$30',
+            //           availability: '48 (532) Available',
+            //           hostelImage: 'assets/hostel1st.png',
+            //         ),
+            //   ),
+            // );
           },
         ),
         HostelCard(
@@ -170,22 +170,22 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
           location: 'Hangover Hostels',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ViewScreen(
-                      backgroundImage: 'assets/ab.png',
-                      hostelName: 'Hostel First Mirissa',
-                      description: 'Lorem ipsum alviflagrideridat.',
-                      location: 'Mirissa',
-                      price1: '\$10',
-                      price2: '\$30',
-                      availability: '48 (532) Available',
-                      hostelImage: 'assets/hostel1st.png',
-                    ),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder:
+            //         (context) => ViewScreen(
+            //           backgroundImage: 'assets/ab.png',
+            //           hostelName: 'Hostel First Mirissa',
+            //           description: 'Lorem ipsum alviflagrideridat.',
+            //           location: 'Mirissa',
+            //           price1: '\$10',
+            //           price2: '\$30',
+            //           availability: '48 (532) Available',
+            //           hostelImage: 'assets/hostel1st.png',
+            //         ),
+            //   ),
+            // );
           },
         ),
         HostelCard(
@@ -198,22 +198,22 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
           location: 'SATORI BEACH HOUSE',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ViewScreen(
-                      backgroundImage: 'assets/c.jpeg',
-                      hostelName: 'Hostel First Mirissa',
-                      description: 'Lorem ipsum alviflagrideridat.',
-                      location: 'Mirissa',
-                      price1: '\$10',
-                      price2: '\$30',
-                      availability: '48 (532) Available',
-                      hostelImage: 'assets/hostel1st.png',
-                    ),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder:
+            //         (context) => ViewScreen(
+            //           backgroundImage: 'assets/c.jpeg',
+            //           hostelName: 'Hostel First Mirissa',
+            //           description: 'Lorem ipsum alviflagrideridat.',
+            //           location: 'Mirissa',
+            //           price1: '\$10',
+            //           price2: '\$30',
+            //           availability: '48 (532) Available',
+            //           hostelImage: 'assets/hostel1st.png',
+            //         ),
+            //   ),
+            // );
           },
         ),
         HostelCard(
@@ -226,22 +226,22 @@ class _HostelSearchResultsState extends State<HostelSearchResults> {
           location: 'SATORI BEACH HOUSE',
           hostelImg: 'assets/hostel1st.png',
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ViewScreen(
-                      backgroundImage: 'assets/d.jpeg',
-                      hostelName: 'Hostel First Mirissa',
-                      description: 'Lorem ipsum alviflagrideridat.',
-                      location: 'Mirissa',
-                      price1: '\$10',
-                      price2: '\$30',
-                      availability: '48 (532) Available',
-                      hostelImage: 'assets/hostel1st.png',
-                    ),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder:
+            //         (context) => ViewScreen(
+            //           backgroundImage: 'assets/d.jpeg',
+            //           hostelName: 'Hostel First Mirissa',
+            //           description: 'Lorem ipsum alviflagrideridat.',
+            //           location: 'Mirissa',
+            //           price1: '\$10',
+            //           price2: '\$30',
+            //           availability: '48 (532) Available',
+            //           hostelImage: 'assets/hostel1st.png',
+            //         ),
+            //   ),
+            // );
           },
         ),
       ],

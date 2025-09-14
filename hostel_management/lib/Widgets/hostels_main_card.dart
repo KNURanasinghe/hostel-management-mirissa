@@ -14,7 +14,7 @@ class HostelCard extends StatelessWidget {
   final VoidCallback? onTap; // Optional tap callback
 
   const HostelCard({
-    Key? key,
+    super.key,
     required this.rating,
     required this.imageUrl,
     required this.price1,
@@ -24,7 +24,7 @@ class HostelCard extends StatelessWidget {
     required this.location,
     required this.hostelImg,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class HostelCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.3),
               blurRadius: 8,
               offset: Offset(0, 2),
             ),
@@ -54,7 +54,12 @@ class HostelCard extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       height: double.infinity,
-                      child: Image.asset(imageUrl, fit: BoxFit.cover),
+                      child: Image.network(imageUrl, fit: BoxFit.cover),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.15),
+                      ),
                     ),
                     // Rating badge
                     Positioned(
