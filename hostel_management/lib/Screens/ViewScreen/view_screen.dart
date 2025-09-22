@@ -185,11 +185,23 @@ class _HostelPageViewState extends State<HostelPageView> {
   final int _currentMediaIndex = 0;
   bool _showingVideo = false;
 
+  bool _isVideoPaused = false;
+
   @override
   void initState() {
     super.initState();
     final videos = widget.hostelData['videos'] ?? [];
     _showingVideo = videos.isNotEmpty;
+  }
+
+  @override
+  void didUpdateWidget(HostelPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Reset pause state when switching to a new page
+    if (widget.isCurrentPage && !oldWidget.isCurrentPage) {
+      _isVideoPaused = false;
+    }
   }
 
   String _formatRating() {
@@ -309,7 +321,34 @@ class _HostelPageViewState extends State<HostelPageView> {
               _showingVideo &&
                       widget.isVideoInitialized &&
                       widget.videoController != null
-                  ? VideoPlayer(widget.videoController!)
+                  ? GestureDetector(
+                    onTap: () {
+                      if (widget.videoController != null) {
+                        setState(() {
+                          if (_isVideoPaused) {
+                            widget.videoController!.play();
+                            _isVideoPaused = false;
+                          } else {
+                            widget.videoController!.pause();
+                            _isVideoPaused = true;
+                          }
+                        });
+                      }
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        VideoPlayer(widget.videoController!),
+                        // Optional: Show play/pause icon overlay
+                        if (_isVideoPaused)
+                          Icon(
+                            Icons.play_arrow,
+                            color: Colors.white.withOpacity(0.8),
+                            size: 80,
+                          ),
+                      ],
+                    ),
+                  )
                   : _getCurrentImageUrl().isNotEmpty
                   ? Image.network(
                     _getCurrentImageUrl(),

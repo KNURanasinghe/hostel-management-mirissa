@@ -168,7 +168,7 @@ class HostelCard extends StatelessWidget {
                 child: Row(
                   children: [
                     // Logo/Avatar
-                    Image.asset(hostelImg, width: 30, height: 30),
+                    Image.network(hostelImg, width: 30, height: 30),
                     SizedBox(width: 12),
                     // Hostel name
                     Expanded(

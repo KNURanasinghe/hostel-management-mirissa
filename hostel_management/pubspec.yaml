@@ -43,7 +43,11 @@ dependencies:
   google_maps_flutter: ^2.6.0
   onesignal_flutter: ^5.3.4
   video_player: ^2.10.0
+<<<<<<< Updated upstream
   flutter_svg: ^2.2.1
+=======
+  anim_search_bar: ^2.0.3
+>>>>>>> Stashed changes
 
 dev_dependencies:
   flutter_test:
